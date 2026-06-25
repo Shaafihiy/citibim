@@ -1,0 +1,47 @@
+<script>
+
+const API = "https://citibim-6vzx.onrender.com/";
+
+async function get(pin)
+{
+    try {
+        const res = await fetch(API + pin);
+        return await res.text();
+    } catch (e) {
+        return "0";
+    }
+}
+
+async function updateDashboard()
+{
+    document.getElementById("temp").innerText = await get("dht_temp") + " °C";
+    document.getElementById("hum").innerText = await get("dht_hum") + " %";
+
+    document.getElementById("bme_temp").innerText = await get("bme_temp") + " °C";
+    document.getElementById("bme_hum").innerText = await get("bme_hum") + " %";
+
+    document.getElementById("pressure").innerText = await get("pressure") + " bar";
+
+    document.getElementById("lux").innerText = await get("lux") + " Lux";
+
+    document.getElementById("gsm").innerText = await get("gsm");
+    document.getElementById("sat").innerText = await get("sat");
+
+    const lat = await get("lat");
+    const lon = await get("lon");
+
+    document.getElementById("lat").innerText = lat;
+    document.getElementById("lon").innerText = lon;
+
+    document.getElementById("mapLink").href =
+        `https://www.google.com/maps?q=${lat},${lon}`;
+
+    document.getElementById("time").innerText =
+        new Date().toLocaleString();
+}
+
+// start + refresh every 5 seconds
+updateDashboard();
+setInterval(updateDashboard, 5000);
+
+</script>
