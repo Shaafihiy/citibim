@@ -54,7 +54,7 @@ app.get("/bme_hum", async (req,res)=> res.send(await get("V8")));
 // PRESSURE (converted to bar)
 app.get("/pressure", async (req,res)=> {
   const p = await get("V9");
-  const bar = parseFloat(p) / 1000;
+  const bar = parseFloat(p);
   res.send(bar.toFixed(2));
 });
 
