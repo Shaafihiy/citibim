@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>CITIBIM Environmental Monitoring</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f4f4;
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,.1);
+}
+
+h1{
+    text-align:center;
+}
+
+.card{
+    background:#fafafa;
+    padding:15px;
+    margin:10px 0;
+    border-radius:8px;
+}
+
+.value{
+    font-size:24px;
+    font-weight:bold;
+}
+
+.button{
+    display:inline-block;
+    padding:10px 20px;
+    background:#007BFF;
+    color:white;
+    text-decoration:none;
+    border-radius:5px;
+}
+
+.status{
+    color:green;
+    font-weight:bold;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>CITIBIM Monitoring Dashboard</h1>
+
+<p class="status">Live Data</p>
+
+<div class="card">
+Temperature (DHT22)
+<div class="value" id="temp">Loading...</div>
+</div>
+
+<div class="card">
+Humidity (DHT22)
+<div class="value" id="hum">Loading...</div>
+</div>
+
+<div class="card">
+Temperature (BME280)
+<div class="value" id="bme_temp">Loading...</div>
+</div>
+
+<div class="card">
+Humidity (BME280)
+<div class="value" id="bme_hum">Loading...</div>
+</div>
+
+<div class="card">
+Pressure
+<div class="value" id="pressure">Loading...</div>
+</div>
+
+<div class="card">
+Light Intensity
+<div class="value" id="lux">Loading...</div>
+</div>
+
+<div class="card">
+GSM Signal
+<div class="value" id="gsm">Loading...</div>
+</div>
+
+<div class="card">
+Satellites
+<div class="value" id="sat">Loading...</div>
+</div>
+
+<div class="card">
+Latitude
+<div class="value" id="lat">Loading...</div>
+</div>
+
+<div class="card">
+Longitude
+<div class="value" id="lon">Loading...</div>
+</div>
+
+<div class="card">
+<a id="mapLink" class="button" target="_blank">
+View Device Location
+</a>
+</div>
+
+<div class="card">
+Last Updated
+<div class="value" id="time">Loading...</div>
+</div>
+
+</div>
+
+<script>
+
+const API = "https://citibim-6vzx.onrender.com/";
+
+async function get(pin)
+{
+    try {
+        const res = await fetch(API + pin);
+        return await res.text();
+    } catch (e) {
+        return "N/A";
+    }
+}
+
+async function updateDashboard()
+{
+    document.getElementById("temp").innerText =
+        await get("dht_temp") + " °C";
+
+    document.getElementById("hum").innerText =
+        await get("dht_hum") + " %";
+
+    document.getElementById("bme_temp").innerText =
+        await get("bme_temp") + " °C";
+
+    document.getElementById("bme_hum").innerText =
+        await get("bme_hum") + " %";
+
+    document.getElementById("pressure").innerText =
+        await get("pressure") + " bar";
+
+    document.getElementById("lux").innerText =
+        await get("lux") + " Lux";
+
+    document.getElementById("gsm").innerText =
+        await get("gsm");
+
+    document.getElementById("sat").innerText =
+        await get("sat");
+
+    const lat = await get("lat");
+    const lon = await get("lon");
+
+    document.getElementById("lat").innerText = lat;
+    document.getElementById("lon").innerText = lon;
+
+    document.getElementById("mapLink").href =
+        `https://www.google.com/maps?q=${lat},${lon}`;
+
+    document.getElementById("time").innerText =
+        new Date().toLocaleString();
+}
+
+updateDashboard();
+setInterval(updateDashboard, 5000);
+
+</script>
+
+</body>
+</html>
