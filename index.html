@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CITIBIM Dashboard</title>
+<link rel="stylesheet" href="style.css"></head>
+<body>
+<h1>CITIBIM Environmental Monitoring</h1>
+<div id="status">Connecting...</div>
+<div class="grid">
+<div class="card">DHT Temp<div id="temp">--</div></div>
+<div class="card">DHT Hum<div id="hum">--</div></div>
+<div class="card">BME Temp<div id="bme_temp">--</div></div>
+<div class="card">BME Hum<div id="bme_hum">--</div></div>
+<div class="card">Pressure<div id="pressure">--</div></div>
+<div class="card">Lux<div id="lux">--</div></div>
+<div class="card">GSM<div id="gsm">--</div></div>
+<div class="card">Satellites<div id="sat">--</div></div>
+<div class="card">Latitude<div id="lat">--</div></div>
+<div class="card">Longitude<div id="lon">--</div></div>
+</div>
+<p><a id="mapLink" target="_blank">View Location</a></p>
+<p>Last update: <span id="time">--</span></p>
+<script src="app.js"></script>
+</body></html>
