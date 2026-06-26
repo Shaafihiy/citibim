@@ -1,0 +1,1 @@
+body{font-family:Arial;background:#f4f4f4;padding:20px}h1{text-align:center}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.card{background:#fff;padding:12px;border-radius:8px;box-shadow:0 2px 6px #ccc}#status{font-weight:bold;margin:10px 0}
