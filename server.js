@@ -5,62 +5,148 @@ const fetch = require("node-fetch");
 const app = express();
 app.use(cors());
 
-// =====================
-// BLYNK CONFIG
-// =====================
+/* ==========================
+   BLYNK CONFIG
+========================== */
+
 const TOKEN = "wx_KExNySnAW7-jl83nWtp-WM-2Anfq6";
-const BASE = "https://blynk.cloud/external/api/get?token=";
+const BASE = `https://blynk.cloud/external/api/get?token=${TOKEN}&`;
 
-// =====================
-// HOME ROUTE
-// =====================
-app.get("/", (req, res) => {
-  res.send("CITIBIM Backend Running ✔");
-});
+/* ==========================
+   SAFE FETCH
+========================== */
 
-// =====================
-// SAFE FETCH FUNCTION
-// =====================
 async function get(pin) {
-  try {
-    const res = await fetch(`${BASE}${TOKEN}&${pin}`);
-    return await res.text();
-  } catch (err) {
-    return "0";
-  }
+    try {
+        const res = await fetch(BASE + pin);
+        return await res.text();
+    } catch (err) {
+        return "0";
+    }
 }
 
-// =====================
-// API ENDPOINTS
-// =====================
+/* ==========================
+   HOME
+========================== */
 
-// GPS
-app.get("/lat", async (req,res)=> res.send(await get("V0")));
-app.get("/lon", async (req,res)=> res.send(await get("V1")));
+app.get("/", (req, res) => {
 
-// DHT
-app.get("/dht_temp", async (req,res)=> res.send(await get("V2")));
-app.get("/dht_hum", async (req,res)=> res.send(await get("V3")));
+    res.json({
+        project: "CITIBIM Environmental Monitoring",
+        version: "2.0",
+        status: "ONLINE",
+        author: "ESS",
+        api: "/api",
+        health: "/health"
+    });
 
-// LUX / GSM / SAT
-app.get("/lux", async (req,res)=> res.send(await get("V4")));
-app.get("/gsm", async (req,res)=> res.send(await get("V5")));
-app.get("/sat", async (req,res)=> res.send(await get("V6")));
-
-// BME280
-app.get("/bme_temp", async (req,res)=> res.send(await get("V7")));
-app.get("/bme_hum", async (req,res)=> res.send(await get("V8")));
-
-// PRESSURE (converted to bar)
-app.get("/pressure", async (req,res)=> {
-  const p = await get("V9");
-  const bar = parseFloat(p);
-  res.send(bar.toFixed(2));
 });
 
-// =====================
-const PORT = process.env.PORT || 3000;
+/* ==========================
+   HEALTH CHECK
+========================== */
 
-app.listen(PORT, () => {
-  console.log("CITIBIM running on port " + PORT);
+app.get("/health", (req,res)=>{
+
+    res.json({
+
+        status:"ONLINE",
+
+        uptime:process.uptime(),
+
+        timestamp:new Date()
+
+    });
+
+});
+
+/* ==========================
+   ABOUT
+========================== */
+
+app.get("/about",(req,res)=>{
+
+res.json({
+
+project:"CITIBIM",
+
+description:"Cloud Based Environmental Monitoring System",
+
+developer:"Akinola Shafiu",
+
+backend:"Node.js",
+
+cloud:"Render",
+
+dashboard:"GitHub Pages"
+
+});
+
+});
+
+/* ==========================
+   VERSION
+========================== */
+
+app.get("/version",(req,res)=>{
+
+res.json({
+
+version:"2.0.0",
+
+release:"June 2026"
+
+});
+
+});
+
+/* ==========================
+   MAIN API
+========================== */
+
+app.get("/api", async (req,res)=>{
+
+const data={
+
+latitude:await get("V0"),
+
+longitude:await get("V1"),
+
+dht_temperature:await get("V2"),
+
+dht_humidity:await get("V3"),
+
+lux:await get("V4"),
+
+gsm_signal:await get("V5"),
+
+satellites:await get("V6"),
+
+bme_temperature:await get("V7"),
+
+bme_humidity:await get("V8"),
+
+pressure:await get("V9"),
+
+updated:new Date()
+
+};
+
+res.json(data);
+
+});
+
+/* ==========================
+   PORT
+========================== */
+
+const PORT=process.env.PORT||3000;
+
+app.listen(PORT,()=>{
+
+console.log("=================================");
+console.log("CITIBIM Backend Started");
+console.log("Port :",PORT);
+console.log("=================================");
+
 });
